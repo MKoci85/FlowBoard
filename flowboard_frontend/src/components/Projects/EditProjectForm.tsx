@@ -1,8 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ProjectForm from "./ProjectForm";
 import { ProjectFormData } from "@/types/index";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateProjectById } from "@/api/ProjectAPI";
 import { toast } from "react-toastify";
 
@@ -21,13 +21,15 @@ export default function EditProjectForm({data, projectId}: EditProjectFormProps)
         description: data.description
     }})
 
+    const queryClient = useQueryClient()
     const { mutate }= useMutation({
         mutationFn: updateProjectById,
         onError: (error) => {
             toast.error(error.message)
         },
         onSuccess: (data) => {
-            console.log(data)
+            queryClient.invalidateQueries({ queryKey: ['projects']})
+            queryClient.invalidateQueries({ queryKey: ["editProject", projectId]})
             toast.success(data)
             navigate('/')
         }
@@ -46,17 +48,10 @@ export default function EditProjectForm({data, projectId}: EditProjectFormProps)
         <>
             <div className='max-w-3xl mx-auto'>
                 <h1 className="text-5xl font-black">Edit Project</h1>
-                <nav className='my-5'>
-                    <Link 
-                        className='bg-sky-500 hover:bg-sky-700 text-white py-1 px-3 rounded-lg text-xl font-bold cursor-pointer transition-colors shadow-md shadow-black/50'
-                        to='/'
-                    >
-                        Dashboard
-                    </Link>
-                </nav>
+                <p className="text-2xl font-light text-gray-500 mt-5">Update the details to modify your project.</p>
     
                 <form
-                    className='mt-10, bg-white shadow-lg p-10 rounded-lg'
+                    className='mt-10, bg-white shadow-lg p-10 rounded-lg mt-5'
                     onSubmit={handleSubmit(handleForm)}
                     noValidate
                 >

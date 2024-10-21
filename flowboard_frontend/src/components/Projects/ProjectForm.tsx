@@ -1,6 +1,8 @@
 import ErrorMessage from "../ErrorMessage";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { ProjectFormData } from "types";
+import BackButton from "../BackButton";
+import { useNavigate } from "react-router-dom";
 
 type ProjectFormProps = {
     register: UseFormRegister<ProjectFormData>
@@ -8,9 +10,19 @@ type ProjectFormProps = {
 }
 
 export default function ProjectForm({register, errors}: ProjectFormProps) {
+
+    const navigate = useNavigate()
+
+    const handleBack = () => {
+        navigate('/')
+      };
+    
     return (
         <>
             <div className="mb-5 space-y-3">
+                <nav className='flex justify-end'>
+                    <BackButton onClick={handleBack} />
+                </nav>
                 <label htmlFor="projectName" className="text-sm uppercase font-bold">
                     Project Name
                 </label>
@@ -18,6 +30,8 @@ export default function ProjectForm({register, errors}: ProjectFormProps) {
                     id="projectName"
                     className="w-full p-3  border border-gray-200"
                     type="text"
+                    autoFocus
+                    autoComplete="off"
                     placeholder="Project Name"
                     {...register("projectName", {
                         required: "Project Name is required",
@@ -37,6 +51,7 @@ export default function ProjectForm({register, errors}: ProjectFormProps) {
                     id="clientName"
                     className="w-full p-3  border border-gray-200"
                     type="text"
+                    autoComplete="off"
                     placeholder="Client Name"
                     {...register("clientName", {
                         required: "Client Name is required",

@@ -22,9 +22,9 @@ export default function NotFoundPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <div className="text-center animate-fade-in-down mt-[-250px]">
+      <div className="text-center animate-fade-in-down mt-[-450px]">
         <h1 className="text-7xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600">404</h1>
-        <p className="text-2xl mb-8 text-gray-600">Board not found</p>
+        <p className="text-2xl mb-8 text-gray-600">This page got lost in cyberspace</p>
       </div>
       
       <div className="animate-fade-in">
@@ -32,15 +32,15 @@ export default function NotFoundPage() {
       </div>
       
       <p className="text-xl mb-8 max-w-xl text-center text-gray-600 animate-fade-in">
-        It seems that this board has vanished into the digital ether. 
-        Perhaps it is in a secret meeting with other lost boards. 🕵️‍♂️✨
+        Uh-oh! It seems this page has wandered off into the digital wilderness. 🧭 
+        But don't worry, let's get you back on track!
       </p>
       
       <div className="flex gap-4 animate-fade-in-up">
         <Link to="/">
           <button className="bg-blue-500 text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-blue-600 transition-colors duration-300">
             <HomeIcon className="w-5 h-5" />
-            Home
+            Take me home!
           </button>
         </Link>
         <button 
@@ -48,7 +48,7 @@ export default function NotFoundPage() {
           className="bg-white text-blue-500 px-6 py-2 rounded-full flex items-center gap-2 border border-blue-500 hover:bg-blue-50 transition-colors duration-300"
         >
           <ArrowPathIcon className="w-5 h-5" />
-          Retry
+          Retry, please!
         </button>
       </div>
     </div>
