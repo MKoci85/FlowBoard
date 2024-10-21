@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes drawLine {
+    to { stroke-dashoffset: 0; }
+  }
+  
+  .animate-fade-in-down {
+    animation: fadeInDown 0.5s ease-out;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out;
+  }
+  
+  .animate-draw-1 {
+    stroke-dasharray: 656;
+    stroke-dashoffset: 656;
+    animation: drawLine 2s ease-out forwards;
+  }
+  
+  .animate-draw-2 {
+    stroke-dasharray: 160;
+    stroke-dashoffset: 160;
+    animation: drawLine 1s ease-out 0.5s forwards;
+  }
+  
+  .animate-draw-3, .animate-draw-4 {
+    stroke-dasharray: 160;
+    stroke-dashoffset: 160;
+    animation: drawLine 1s ease-out 1s forwards;
+  }
