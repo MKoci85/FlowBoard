@@ -62,7 +62,7 @@ export default function EditProjectForm({data, projectId}: EditProjectFormProps)
                     <input
                         type="submit"
                         value="Save Changes"
-                        className='bg-sky-500 hover:bg-sky-700 text-white py-1 px-5 rounded-lg text-xl font-bold cursor-pointer transition-colors shadow-md shadow-black/50 w-full block text-center'
+                        className='bg-sky-500 hover:bg-sky-700 text-white py-1 px-5 rounded-full text-xl font-bold cursor-pointer transition-colors shadow-md shadow-black/50 w-full block text-center'
                     />
                 </form>
             </div>

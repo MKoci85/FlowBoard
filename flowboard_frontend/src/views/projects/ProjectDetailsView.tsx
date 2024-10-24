@@ -4,6 +4,7 @@ import { getProjectById } from "@/api/ProjectAPI"
 import AddTaskModal from "@/components/Tasks/AddTaskModal"
 import TaskList from "@/components/Tasks/TaskList"
 import EditTaskData from "@/components/Tasks/EditTaskData"
+import TaskModalDetails from "@/components/Tasks/TaskModalDetails"
 
 export default function ProjectDetailsView() {
 
@@ -28,7 +29,8 @@ export default function ProjectDetailsView() {
 
             <nav className="my-5 flex gap-3">
                 <button
-                    className="bg-sky-500 hover:bg-sky-600 px-10 py-1 text-white text-xl font-bold cursor-pointer transition-colors rounded shadow-black shadow"
+                    className="bg-sky-500 hover:bg-sky-700 text-white py-3 px-10 rounded-full text-xl font-bold cursor-pointer 
+                        transition-transform transform hover:scale-110 active:scale-95 shadow-lg shadow-black/50 flex items-center gap-2"
                     onClick={() => navigate(location.pathname + '?newTask=true')} 
                 >
                     Add Task
@@ -37,6 +39,7 @@ export default function ProjectDetailsView() {
             <TaskList tasks={data.tasks}/>
             <AddTaskModal />
             <EditTaskData />
+            <TaskModalDetails />
         </>
     )
 }
