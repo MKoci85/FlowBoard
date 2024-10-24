@@ -16,7 +16,8 @@ export default function ProjectDetailsView() {
     const { data, isLoading, isError } = useQuery({
         queryKey: ["project", projectId],
         queryFn: () => getProjectById(projectId),
-        retry: false
+        retry: false,
+        
     })
 
     if(isLoading) return <p>Loading...</p>
@@ -33,7 +34,10 @@ export default function ProjectDetailsView() {
                         transition-transform transform hover:scale-110 active:scale-95 shadow-lg shadow-black/50 flex items-center gap-2"
                     onClick={() => navigate(location.pathname + '?newTask=true')} 
                 >
-                    Add Task
+                <span>Add Task</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
                 </button>
             </nav>
             <TaskList tasks={data.tasks}/>

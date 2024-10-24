@@ -127,7 +127,7 @@ export default function LoginView() {
           </div>
           <p className="text-center text-gray-600 text-sm">
             Don't have an account?{' '}
-            <Link to="/auth/create-account" className="text-blue-600 hover:text-blue-800 transition duration-150 ease-in-out">
+            <Link to="/auth/register" className="text-blue-600 hover:text-blue-800 transition duration-150 ease-in-out">
               Sign up
             </Link>
           </p>

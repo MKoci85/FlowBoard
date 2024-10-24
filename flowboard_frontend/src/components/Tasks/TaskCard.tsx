@@ -29,7 +29,7 @@ export default function TaskCard({task}: TaskCardProps) {
     })
 
   return (
-    <li className="p-5 bg-gradient-to-b from-blue-50 via-purple-50 to-indigo-50 border border-slate-300 flex justify-between gap-3 shadow-sm rounded-md hover:shadow-2xl transition-all duration-300 hover:shadow-sky-700">
+    <li className="p-5 bg-gradient-to-b from-blue-50 via-purple-50 to-indigo-50 border border-slate-300 flex justify-between gap-3 shadow-sm rounded-md hover:shadow-2xl transition-all duration-300 hover:shadow-sky-900/70">
         <div className="min-w-0 flex flex-col gap-y-4">
             <button 
                 type="button"
