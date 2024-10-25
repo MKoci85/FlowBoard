@@ -19,4 +19,18 @@ export class AuthEmail {
 
         })
     }
+
+    static sendPasswordResetToken = async ( user: IEmail ) => {
+        await transporter.sendMail({
+            from: 'FlowBoard <no-reply@flowboard.com>',
+            to: user.email,
+            subject: 'Reset your password',
+            text: 'Please reset your password',
+            html: `<p>Hi, ${user.name}. You have requested to reset your password. Please reset your password by clicking <a href="${process.env.FRONTEND_URL}/auth/new-password">here</a> 
+                    and entering the following code: ${user.token}</p>
+                    <p>This link will expire in 15 minutes</p>            
+            `
+
+        })
+    }
 }

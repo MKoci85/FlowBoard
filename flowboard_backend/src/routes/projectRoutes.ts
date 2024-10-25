@@ -5,10 +5,15 @@ import { handleInputErrors } from '../middleware/validation'
 import { TaskController } from '../controllers/TaskController'
 import { projectExists } from '../middleware/project'
 import { taskBelongsToProject, taskExists } from '../middleware/task'
+import { authenticate } from '../middleware/auth'
+import { TeamController } from '../controllers/TeamController'
 
 const router = Router()
 
+router.use(authenticate)
+
 router.post('/', 
+    authenticate,
     body('projectName').notEmpty().withMessage('Project name is required'),
     body('clientName').notEmpty().withMessage('Client name is required'),
     body('description').notEmpty().withMessage('Description is required'),
@@ -77,6 +82,21 @@ router.post('/:projectId/tasks/:taskId/status',
     body('status').notEmpty().withMessage('Task status is required'),
     handleInputErrors,
     TaskController.updateTaskStatus
+)
+
+
+
+/** Routes for teams */
+router.post('/:projectId/team/find',
+    body('email').isEmail().withMessage('Invalid email'),
+    handleInputErrors,
+    TeamController.findMemberByEmail
+)
+
+router.post('/:projectId/team',
+    body('id').isMongoId().withMessage('Invalid ID'),
+    handleInputErrors,
+    TeamController.addUserById
 )
 
 export default router

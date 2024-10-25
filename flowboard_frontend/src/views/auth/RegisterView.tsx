@@ -35,7 +35,10 @@ export default function RegisterView() {
 
   const password = watch('password');
 
-  const handleRegister = (formData: UserRegistrationForm) => mutate(formData)
+  const handleRegister = (formData: UserRegistrationForm) => {
+    console.log(formData)
+    mutate(formData)
+  }
 
   return (
     <div>

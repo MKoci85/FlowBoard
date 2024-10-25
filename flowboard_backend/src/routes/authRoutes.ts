@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { AuthController } from "../controllers/AuthController";
 import { handleInputErrors } from "../middleware/validation";
+import { authenticate } from "../middleware/auth";
 
 const router = Router()
 
-router.post('/create-account', 
+router.post('/register', 
     body('name').notEmpty().withMessage('Name is required'),
     body('email').isEmail().withMessage('Invalid email'),
     body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
@@ -37,5 +38,36 @@ router.post('/request-code',
     handleInputErrors,
     AuthController.requestConfirmationCode
 )
+
+router.post('/forgot-password',
+    body('email').isEmail().withMessage('Invalid email'),
+    handleInputErrors,
+    AuthController.forgotPassword
+)
+
+router.post('/validate-code',
+    body('token').notEmpty().withMessage('Token is required'),
+    handleInputErrors,
+    AuthController.verifyCode
+)
+
+router.post('/update-password/:token',
+    param('token').isNumeric().withMessage('Invalid Token'),
+    body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
+    body('confirmPassword').custom((value, { req }) => {
+        if (value !== req.body.password) {
+            throw new Error('Passwords do not match')
+        }
+        return true
+    }),
+    handleInputErrors,
+    AuthController.updatePasswordWithToken
+)
+
+router.get('/user',
+    authenticate,
+    AuthController.getUser
+)
+
 
 export default router

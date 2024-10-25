@@ -1,9 +1,10 @@
 import type { Request, Response } from "express"
-import User from "../models/Usert"
+import User from "../models/User"
 import { comparePassword, hashPassword } from "../utils/auth"
 import { generateToken } from "../utils/token"
 import Token from "../models/Token"
 import { AuthEmail } from "../emails/AuthEmail"
+import { generateJWT } from "../utils/jwt"
 
 export class AuthController {
 
@@ -11,8 +12,8 @@ export class AuthController {
         try {
             const { password, email } = req.body
 
-            const userExists = await User.findOne({ email})
-            if(!userExists) {
+            const userExists = await User.findOne({ email })
+            if(userExists) {
                 res.status(400).json({message: 'User email already exists'})
                 return
             }
@@ -88,7 +89,9 @@ export class AuthController {
                 res.status(404).json({message: 'Wrong password'})
                 return
             }
-            res.send('Logged in successfully')
+
+            const token = generateJWT({id: user.id})
+            res.send(token)
         } catch (error) {
             res.status(500).json({message: error.message})
         }
@@ -129,4 +132,68 @@ export class AuthController {
         }
     }
 
+    static forgotPassword = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.body
+
+            const user = await User.findOne({ email})
+            if(!user) {
+                res.send('If your email is registered, you will receive a password reset code')
+                return
+            }
+
+            // Create token
+            const token = new Token()
+            token.token = generateToken()
+            token.user = user.id
+            await token.save()
+
+            // Send email
+            AuthEmail.sendPasswordResetToken({
+                email: user.email,
+                name: user.name,
+                token: token.token
+            })
+
+            res.send('If your email is registered, you will receive a password reset code')
+        } catch (error) {
+            res.status(500).json({message: error.message})
+        }
+    }
+
+
+    static verifyCode = async (req: Request, res: Response) => {
+        try {
+            const { token } = req.body
+            const tokenExists = await Token.findOne({ token})
+            if(!tokenExists) {
+                res.status(404).json({message: 'Invalid token'})
+                return
+            }
+            res.send('Code verified successfully, set your new password')
+        } catch (error) {
+            res.status(500).json({message: error.message})
+        }
+    }
+
+    static updatePasswordWithToken = async (req: Request, res: Response) => {
+        try {
+            const { token } = req.params
+            const tokenExists = await Token.findOne({ token})
+            if(!tokenExists) {
+                res.status(404).json({message: 'Invalid token'})
+                return
+            }
+            const user = await User.findById(tokenExists.user)
+            user.password = await hashPassword(req.body.password)
+            await Promise.allSettled([user.save(), tokenExists.deleteOne()])
+            res.send('Password updated successfully')
+        } catch (error) {
+            res.status(500).json({message: error.message})
+        }
+    }
+
+    static getUser = async (req: Request, res: Response) => {
+        res.json(req.user)
+    }
 }

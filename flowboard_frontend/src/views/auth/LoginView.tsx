@@ -5,17 +5,19 @@ import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import { UserLoginForm } from '@/types/index'
 import { EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { login } from '@/api/AuthAPI'
 import { toast } from 'react-toastify'
 
 export default function LoginView() {
   const [showPassword, setShowPassword] = useState(false)
-
+  
   const initialValues: UserLoginForm = {
     email: '',
     password: '',
   }
+
+  
 
   const {
     register,
@@ -23,13 +25,14 @@ export default function LoginView() {
     formState: { errors },
   } = useForm({ defaultValues: initialValues })
 
+  const navigate = useNavigate()
   const { mutate } = useMutation({
     mutationFn: login,
     onError: (error) => {
         toast.error(error.message)
     },
-    onSuccess: (data) => {
-        toast.success(data)
+    onSuccess: () => {
+        navigate('/')
     }
   })
 
@@ -40,7 +43,7 @@ export default function LoginView() {
       <div className="w-full max-w-md">
         <form
           onSubmit={handleSubmit(handleLogin)}
-          className="bg-white shadow-2xl rounded-lg px-8 pt-6 pb-8 mb-4 transform transition-all duration-500 ease-in-out hover:scale-95"
+          className="bg-white shadow-2xl rounded-lg px-8 pt-6 pb-8 mb-4 transform transition-all duration-500 ease-in-out"
           noValidate
         >
           <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Welcome Back!</h2>
@@ -53,7 +56,6 @@ export default function LoginView() {
                 id="email"
                 type="email"
                 placeholder="your@email.com"
-                autoComplete='off'
                 className={`appearance-none border rounded-lg w-full py-3 px-4 pl-11 text-gray-700 leading-tight focus:outline-none focus:shadow-outline transition-all duration-300 ${
                   errors.email ? 'border-red-500 shake' : 'border-gray-300 hover:border-gray-400'
                 }`}
@@ -113,9 +115,9 @@ export default function LoginView() {
               <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out" />
               <span className="ml-2 text-gray-700">Remember me</span>
             </label>
-            <a href="#" className="text-sm text-blue-600 hover:text-blue-800 transition duration-150 ease-in-out">
+            <Link to="/auth/forgot-password" className="text-sm text-blue-600 hover:text-blue-800 transition duration-150 ease-in-out">
               Forgot Password?
-            </a>
+            </Link>
           </div>
           <div className="mb-6">
             <button
