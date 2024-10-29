@@ -29,14 +29,23 @@ export default function TaskCard({task}: TaskCardProps) {
     })
 
   return (
-    <li className="p-5 bg-gradient-to-b from-blue-50 via-purple-50 to-indigo-50 border border-slate-300 flex justify-between gap-3 shadow-sm rounded-md hover:shadow-2xl transition-all duration-300 hover:shadow-sky-900/70">
+    <li className={`p-5 bg-gradient-to-b from-blue-50 via-purple-50 to-indigo-50 border 
+        ${task.status === 'onHold' ? 'border-amber-400' 
+            : task.status === 'inProgress' ? 'border-blue-400' 
+            : task.status === 'underReview' ? 'border-rose-500' 
+            : task.status === 'completed' ? 'border-emerald-400' 
+            : 'border-slate-300'
+        } 
+        border-slate-300 flex justify-between gap-3 shadow-sm rounded-md hover:shadow-2xl transition-all duration-300 hover:shadow-sky-900/70`}>
         <div className="min-w-0 flex flex-col gap-y-4">
             <button 
-                type="button"
-                className="text-xl font-bold text-slate-600 text-left"
+                type='button' 
+                className="text-xl font-bold text-slate-600 text-left hover:underline hover:text-sky-600"
+                onClick={() => navigate(location.pathname + `?viewTask=${task._id}`)}
             >
-                {task.name}
+                View Task
             </button>
+            
             <p className="text-slate-500">{task.description}</p>
         </div>
         <div className="flex shrink-0  gap-x-6">

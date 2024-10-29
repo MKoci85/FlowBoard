@@ -93,10 +93,20 @@ router.post('/:projectId/team/find',
     TeamController.findMemberByEmail
 )
 
+router.get('/:projectId/team',
+    TeamController.getProjectTeam
+)
+
 router.post('/:projectId/team',
     body('id').isMongoId().withMessage('Invalid ID'),
     handleInputErrors,
     TeamController.addUserById
+)
+
+router.delete('/:projectId/team/:userId',
+    param('userId').isMongoId().withMessage('Invalid User ID'),
+    handleInputErrors,
+    TeamController.removeUserById
 )
 
 export default router

@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import TaskForm from './TaskForm';
 import { updateTask } from '@/api/TaskAPI';
 import { toast } from 'react-toastify';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 type EditTaskModalProps = {
     data: Task,
@@ -14,12 +15,13 @@ type EditTaskModalProps = {
 }
 
 export default function EditTaskModal({data, taskId}: EditTaskModalProps) {
-
     const navigate = useNavigate()
-    const { register, handleSubmit, reset, formState: {errors} } = useForm<TaskFormData>({defaultValues: {
-        name: data.name,
-        description: data.description
-    }})
+    const { register, handleSubmit, reset, formState: {errors} } = useForm<TaskFormData>({
+        defaultValues: {
+            name: data.name,
+            description: data.description
+        }
+    })
 
     const queryClient = useQueryClient()
     const params = useParams()
@@ -39,12 +41,17 @@ export default function EditTaskModal({data, taskId}: EditTaskModalProps) {
     })
 
     const handleEditTask = (formData: TaskFormData) => {
-        const data = {projectId, taskId,formData}
+        const data = {projectId, taskId, formData}
         mutate(data)
     }
+
     return (
         <Transition appear show={true} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={() => navigate(location.pathname, {replace: true}) }>
+            <Dialog 
+                as="div" 
+                className="relative z-10" 
+                onClose={() => navigate(location.pathname, {replace: true})}
+            >
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -54,7 +61,7 @@ export default function EditTaskModal({data, taskId}: EditTaskModalProps) {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <div className="fixed inset-0 bg-black/60" />
+                    <div className="fixed inset-0 bg-black bg-opacity-75" />
                 </Transition.Child>
 
                 <div className="fixed inset-0 overflow-y-auto">
@@ -68,30 +75,38 @@ export default function EditTaskModal({data, taskId}: EditTaskModalProps) {
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all p-16">
+                            <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                                 <Dialog.Title
                                     as="h3"
-                                    className="font-black text-4xl  my-5"
+                                    className="text-3xl font-bold text-center mb-6 text-gray-800"
                                 >
                                     Edit Task
                                 </Dialog.Title>
-
+                                <button
+                                    type="button"
+                                    className="absolute top-3 right-3 text-gray-400 hover:text-gray-500"
+                                    onClick={() => navigate(location.pathname, {replace: true})}
+                                >
+                                    <span className="sr-only">Close</span>
+                                    <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                                </button>
                                 <form
-                                    className="mt-10 space-y-3"
+                                    className="mt-8 space-y-6"
                                     onSubmit={handleSubmit(handleEditTask)}
                                     noValidate
                                 >
-                    
                                     <TaskForm 
                                         register={register}
                                         errors={errors}
                                     />
-                    
-                                    <input
-                                        type="submit"
-                                        value="Save Changes"
-                                        className='bg-sky-500 hover:bg-sky-700 text-white py-1 px-5 rounded-lg text-xl font-bold cursor-pointer transition-colors shadow-md shadow-black/50 w-full block text-center'
-                                    />
+                                    <div>
+                                        <button
+                                            type="submit"
+                                            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transform transition-all duration-300 ease-in-out hover:scale-105"
+                                        >
+                                            Save Changes
+                                        </button>
+                                    </div>
                                 </form>
                             </Dialog.Panel>
                         </Transition.Child>
