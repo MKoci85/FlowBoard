@@ -108,6 +108,20 @@ export default function TaskModalDetails() {
                                         Last update: {formatDate(data.updatedAt)}
                                     </div>
                                     <p className="text-gray-700">{data.description}</p>
+
+                                    <p className='text-lg text-purple-900 font-bold mb-2'>Changes history</p>
+
+                                    <ul className='list-decimal'>
+                                        {data.completedBy.slice(-7).map((activityLog) => (
+                                            <li key={activityLog._id}>
+                                                <span className='text-slate-900'>
+                                                    {statusTranslations[activityLog.status]}:
+                                                </span> {' '}
+                                                <span className='text-purple-900'>{activityLog.user.name}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    
                                     <div className="space-y-2">
                                         <label htmlFor="status" className="block text-sm font-medium text-gray-700">
                                             Current Status

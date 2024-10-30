@@ -40,6 +40,10 @@ export class TeamController {
             res.status(409).json({message: 'User already in team'})
             return
         }
+        if(req.project.manager.toString() === user.id.toString()) {
+            res.status(409).json({message: 'You cannot add yourself'})
+            return
+        }
         req.project.team.push(user.id)
         await req.project.save()
         res.send('User added to team')

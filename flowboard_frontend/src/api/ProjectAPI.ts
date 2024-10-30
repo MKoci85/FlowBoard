@@ -36,6 +36,8 @@ export async function getProjectById(projectId: Project["_id"]) {
         const response = projectSchema.safeParse(data)
         if(response.success) {
             return response.data
+        } else {
+            return null
         }
     } catch (error) {
         if(isAxiosError(error) && error.response) {

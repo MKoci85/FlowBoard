@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express'
-import Project from '../models/Project'
+import Project, { IProject } from '../models/Project'
+import { ITask } from '../models/Task'
 
 export class ProjectController {
 
@@ -18,7 +19,8 @@ export class ProjectController {
         try {   
             const projects = await Project.find({
                 $or: [
-                    { manager: {$in: req.user.id}}
+                    { manager: {$in: req.user.id}},
+                    {team: {$in: req.user.id}}
                 ]
             })
             res.json(projects)
@@ -29,15 +31,24 @@ export class ProjectController {
 
     static getProjectById = async (req: Request, res: Response) => {
         try {
-            const project = await Project.findById(req.params.id).populate('tasks')
+            const project = await Project.findById(req.params.id).populate({
+                path: 'tasks',
+                populate: {
+                    path: 'completedBy.user',
+                    model: 'User',
+                    select: 'id name email'
+                }
+            })
             if (!project) {
-                res.status(404).json({ message: 'Project not found' })
+                res.status(404).json({ message: 'Project not found.' })
                 return
             }
-            if(project.manager.toString() !== req.user.id) {
-                res.status(401).json({message: 'Unauthorized'})
+            if(project.manager.toString() !== req.user.id && !project.team.includes(req.user.id)) {
+                res.status(401).json({message: 'Unauthorized!'})
                 return
             }
+            
+            console.log('Tasks:', project.tasks);
             res.json(project)
         } catch (error) {
             res.status(500).json({ message: error.message })
@@ -50,12 +61,12 @@ export class ProjectController {
         try {
             const project = await Project.findById(id)
             if (!project) {
-                res.status(404).json({ message: 'Project not found' })
+                res.status(404).json({ message: 'Project not found.' })
                 return
             }
 
-            if(project.manager.toString() !== req.user.id) {
-                res.status(401).json({message: 'Only the manager can update this project'})
+            if(project.manager.toString() !== req.user.id && project.team.includes(req.user.id)) {
+                res.status(401).json({message: 'Only the manager can update this project.'})
                 return
             }
 
@@ -78,7 +89,7 @@ export class ProjectController {
                 return
             }
 
-            if(project.manager.toString() !== req.user.id) {
+            if(project.manager.toString() !== req.user.id && project.team.includes(req.user.id)) {
                 res.status(401).json({message: 'Only the manager can update this project'})
                 return
             }

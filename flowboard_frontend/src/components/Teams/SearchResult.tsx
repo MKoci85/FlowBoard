@@ -31,6 +31,7 @@ export default function SearchResult({user, reset}: SearchResultProps) {
             id: user._id,
             projectId
         }
+        
         mutate(data)
     }
 

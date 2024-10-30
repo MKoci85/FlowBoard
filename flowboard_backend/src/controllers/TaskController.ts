@@ -28,11 +28,8 @@ export class TaskController {
 
     static getTaskById = async (req: Request, res: Response) => {
         try {
-            if (req.task.project._id.toString() !== req.project.id) {
-                res.status(403).json({ message: 'Task does not belong to this project' })
-                return
-            }
-            res.json(req.task)
+            const task = await Task.findById(req.task.id).populate({path:'completedBy.user', select: 'id name email'})
+            res.json(task)
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
@@ -61,7 +58,13 @@ export class TaskController {
 
     static updateTaskStatus = async (req: Request, res: Response) => {
         try {
-            req.task.status = req.body.status
+            const { status } = req.body
+            req.task.status = status
+            const data = {
+                user: req.user.id,
+                status
+            }
+            req.task.completedBy.push(data)
             await req.task.save()
             res.send('Task status updated successfully')
         } catch (error) {

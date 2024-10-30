@@ -2,10 +2,14 @@ import { Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteProjectById, getAllProjects } from '@/api/ProjectAPI'
 import { toast } from 'react-toastify'
+import { useAuth } from '@/hooks/useAuth'
+import { isManager } from '@/utils/policies'
 
 export default function DashboardView() {
 
     const queryClient = useQueryClient()
+
+    const { data: user, isLoading: authLoading} = useAuth()
 
     const { data, isLoading } = useQuery({
         queryKey: ['projects'],
@@ -23,9 +27,9 @@ export default function DashboardView() {
         }
     })
 
-    if(isLoading) return <p>Loading...</p>
+    if(isLoading && authLoading) return <p>Loading...</p>
   
-    if(data) return (
+    if(data && user) return (
     <>
         <h1 className="text-5xl font-black">Projects</h1>
         <p className="text-2xl font-light text-gray-500 mt-5"> Manage your projects </p>
@@ -48,6 +52,10 @@ export default function DashboardView() {
                 <Link to={`/projects/${project._id}`}>
                     <div className="w-full flex items-center justify-between p-6 space-x-6">
                         <div className="flex-1 truncate">
+                            { project.manager === user._id ?
+                                <p className='font-bold text-xs uppercase bg-amber-100 text-amber-500 rounded-full inline-block py-1 px-4 shadow-md'>Manager</p> :
+                                <p className='font-bold text-xs uppercase bg-sky-100 text-sky-600  rounded-full inline-block py-1 px-4 shadow-md'>Team Member</p>
+                            }
                             <p className="text-gray-900 text-3xl font-bold hover:underline">
                                 {project.projectName}
                             </p>
@@ -71,7 +79,15 @@ export default function DashboardView() {
                             </div>
                             <div className="-ml-px w-0 flex-1 flex bg-orange-300 hover:bg-orange-100">
                                 <Link to={`/projects/${project._id}/edit`}
-                                    className="relative w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 font-medium border border-transparent rounded-br-lg hover:text-gray-500"
+                                    className={`relative w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 font-medium border border-transparent rounded-br-lg hover:text-gray-500 ${
+                                        !isManager(project.manager, user._id) ? 'pointer-events-none opacity-50' : ''
+                                    }`}
+                                    onClick={(e) => {
+                                        if (!isManager(project.manager, user._id)) {
+                                            e.preventDefault();
+                                            toast.error("Only the manager can update this project.");
+                                        }
+                                    }}
                                 >
                                     Edit Project
                                 </Link>
@@ -79,8 +95,16 @@ export default function DashboardView() {
                             <div className="-ml-px w-0 flex-1 flex bg-rose-300 hover:bg-rose-100">
                                 <button 
                                     type='button' 
-                                    className="relative w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-red-500 font-medium border border-transparent rounded-br-lg hover:text-red-700"
-                                    onClick={() => {mutate(project._id)} }
+                                    className={`relative w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-red-500 font-medium border border-transparent rounded-br-lg hover:text-red-700 ${
+                                        project.manager !== user._id ? 'pointer-events-none opacity-50' : ''
+                                    }`}
+                                    onClick={(e) => {
+                                        if (!isManager(project.manager, user._id)) {
+                                            e.preventDefault();
+                                            toast.error("Only the manager can delete this project.");
+                                        } else {
+                                            mutate(project._id)} }
+                                        }
                                 >
                                     Delete Project
                                 </button>

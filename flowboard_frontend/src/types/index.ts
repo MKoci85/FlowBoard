@@ -33,12 +33,18 @@ export type User = z.infer<typeof userSchema>
 export const taskStatusSchema = z.enum([ "pending", "onHold", "inProgress", "underReview", "completed"])
 export type TaskStatus = z.infer<typeof taskStatusSchema>
 
+
 export const taskSchema = z.object({
     _id: z.string(),
     name: z.string().min(1, {message: "Task Name is required"}),
     description: z.string().min(1, {message: "Description is required"}),
     project: z.string(),
     status: taskStatusSchema,
+    completedBy: z.array(z.object({
+        _id: z.string(),
+        user: userSchema,
+        status: taskStatusSchema
+    })),
     createdAt: z.string(),
     updatedAt: z.string()
 })
@@ -52,7 +58,8 @@ export const projectSchema = z.object({
     projectName: z.string().min(1, {message: "Project Name is required"}),
     clientName: z.string().min(1, {message: "Client Name is required"}),
     description: z.string().min(1, {message: "Description is required"}),
-    tasks: z.array(taskSchema)
+    tasks: z.array(taskSchema),
+    manager: z.string(userSchema.pick({_id: true}))
 })
 
 export const dashboardProjectSchema = z.array(
@@ -60,7 +67,8 @@ export const dashboardProjectSchema = z.array(
         _id: true,
         projectName: true,
         clientName: true,
-        description: true
+        description: true,
+        manager: true
     })
 )
 

@@ -8,10 +8,11 @@ import { deleteTask } from "@/api/TaskAPI"
 import { toast } from "react-toastify"
 
 type TaskCardProps = {
-    task: Task
+    task: Task,
+    canEdit: boolean
 }
 
-export default function TaskCard({task}: TaskCardProps) {
+export default function TaskCard({task, canEdit}: TaskCardProps) {
 
     const navigate = useNavigate()
     const queryClient = useQueryClient()
@@ -70,8 +71,15 @@ export default function TaskCard({task}: TaskCardProps) {
                         <Menu.Item>
                             <button 
                                 type='button' 
-                                className='block px-3 py-1 text-sm leading-6 text-gray-900'
-                                onClick={() => navigate(location.pathname + `?editTask=${task._id}`)}
+                                className={`block px-3 py-1 text-sm leading-6 text-gray-900 ${!canEdit ? 'pointer-events-none opacity-50' : ''}`}
+                                onClick={(e) => {
+                                    if(canEdit) {
+                                        navigate(location.pathname + `?editTask=${task._id}`)}
+                                    else {
+                                        e.preventDefault()
+                                        toast.error("Only the manager can edit tasks")
+                                    }
+                            }}
                             >
                                 Edit Task
                             </button>
@@ -80,8 +88,15 @@ export default function TaskCard({task}: TaskCardProps) {
                         <Menu.Item>
                             <button 
                                 type='button' 
-                                className='block px-3 py-1 text-sm leading-6 text-red-500'
-                                onClick={() => mutate({projectId, taskId: task._id})}
+                                className={`block px-3 py-1 text-sm leading-6 text-red-500 ${!canEdit ? 'pointer-events-none opacity-50' : ''}`}
+                                onClick={(e) => {
+                                    if(canEdit) {
+                                        mutate({projectId, taskId: task._id})
+                                    } else {
+                                        e.preventDefault()
+                                        toast.error("Only the manager can delete tasks")
+                                    }
+                                }}
                             >
                                 Delete Task
                             </button>

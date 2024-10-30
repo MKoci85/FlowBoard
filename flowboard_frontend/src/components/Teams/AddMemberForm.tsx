@@ -17,7 +17,6 @@ export default function AddMemberForm() {
 
     const mutation = useMutation({
         mutationFn: findUserByEmail,
-
     })
 
     const handleSearchUser = async (formData: TeamMemberForm) => {
