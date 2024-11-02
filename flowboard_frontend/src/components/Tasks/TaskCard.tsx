@@ -44,7 +44,7 @@ export default function TaskCard({task, canEdit}: TaskCardProps) {
                 className="text-xl font-bold text-slate-600 text-left hover:underline hover:text-sky-600"
                 onClick={() => navigate(location.pathname + `?viewTask=${task._id}`)}
             >
-                View Task
+                {task.name}
             </button>
             
             <p className="text-slate-500">{task.description}</p>

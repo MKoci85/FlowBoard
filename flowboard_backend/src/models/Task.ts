@@ -19,6 +19,7 @@ export interface ITask extends Document {
         user: Types.ObjectId,
         status: TaskStatus
     }[]
+    notes: Types.ObjectId[]
 }
 
 export const TaskSchema = new Schema({
@@ -56,7 +57,11 @@ export const TaskSchema = new Schema({
     project: { 
         type: Types.ObjectId, 
         ref: 'Project' 
-    }
+    },
+    notes: [{
+        type: Types.ObjectId,
+        ref: 'Note'
+    }]
 }, { timestamps: true })
 
 export default mongoose.model<ITask>('Task', TaskSchema)

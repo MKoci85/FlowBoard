@@ -8,6 +8,7 @@ import { formatDate } from '@/utils/utils';
 import { statusTranslations } from '@/locales/es';
 import { TaskStatus } from '@/types/index';
 import { XMarkIcon, CalendarIcon, ClockIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import NotesPanel from '../Notes/NotesPanel';
 
 export default function TaskModalDetails() {
     const params = useParams()
@@ -109,18 +110,23 @@ export default function TaskModalDetails() {
                                     </div>
                                     <p className="text-gray-700">{data.description}</p>
 
-                                    <p className='text-lg text-purple-900 font-bold mb-2'>Changes history</p>
+                                    {data.completedBy.length ? (
+                                        <>
+                                            <p className='text-lg text-purple-900 font-bold mb-2'>Changes history</p>
 
-                                    <ul className='list-decimal'>
-                                        {data.completedBy.slice(-7).map((activityLog) => (
-                                            <li key={activityLog._id}>
-                                                <span className='text-slate-900'>
-                                                    {statusTranslations[activityLog.status]}:
-                                                </span> {' '}
-                                                <span className='text-purple-900'>{activityLog.user.name}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                            <ul className='list-decimal'>
+                                                {data.completedBy.slice(-7).map((activityLog) => (
+                                                    <li key={activityLog._id}>
+                                                        <span className='text-slate-900'>
+                                                            {statusTranslations[activityLog.status]}:
+                                                        </span> {' '}
+                                                        <span className='text-purple-900'>{activityLog.user.name}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </>
+                                    ): null}
+                                    
                                     
                                     <div className="space-y-2">
                                         <label htmlFor="status" className="block text-sm font-medium text-gray-700">
@@ -143,6 +149,10 @@ export default function TaskModalDetails() {
                                         </div>
                                     </div>
                                 </div>
+
+                                <NotesPanel 
+                                    notes={data.notes}
+                                />
                             </Dialog.Panel>
                         </Transition.Child>
                     </div>

@@ -33,12 +33,14 @@ export class ProjectController {
         try {
             const project = await Project.findById(req.params.id).populate({
                 path: 'tasks',
-                populate: {
-                    path: 'completedBy.user',
-                    model: 'User',
-                    select: 'id name email'
-                }
-            })
+                populate: [
+                    { path: 'completedBy.user', model: 'User', select: 'id name email' },
+                    { path: 'notes', model: 'Note' } 
+                ]
+            });
+            console.log(JSON.stringify(project.tasks, null, 2));
+
+            
             if (!project) {
                 res.status(404).json({ message: 'Project not found.' })
                 return
@@ -48,7 +50,6 @@ export class ProjectController {
                 return
             }
             
-            console.log('Tasks:', project.tasks);
             res.json(project)
         } catch (error) {
             res.status(500).json({ message: error.message })
