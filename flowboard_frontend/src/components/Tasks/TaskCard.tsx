@@ -1,110 +1,131 @@
-import { Fragment } from "react"
-import { Task } from "@/types/index"
-import { Menu, Transition } from "@headlessui/react"
-import { EllipsisVerticalIcon } from "@heroicons/react/20/solid"
-import { useNavigate, useParams } from "react-router-dom"
+'use client'
+
+import { Project, TaskProject } from "@/types/index"
+import { useNavigate, useParams, Link } from "react-router-dom"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { deleteTask } from "@/api/TaskAPI"
 import { toast } from "react-toastify"
+import { useDraggable } from "@dnd-kit/core"
+import { getProjectDetails } from "@/api/ProjectAPI"
+import { useEffect, useState } from "react"
+import { useAuth } from "@/hooks/useAuth"
 
 type TaskCardProps = {
-    task: Task,
-    canEdit: boolean
+  task: TaskProject
+  canEdit: boolean
 }
 
-export default function TaskCard({task, canEdit}: TaskCardProps) {
+export default function TaskCard({ task, canEdit }: TaskCardProps) {
 
-    const navigate = useNavigate()
-    const queryClient = useQueryClient()
-    const params = useParams()
-    const projectId = params.projectId!
-    const { mutate } = useMutation({
-        mutationFn: deleteTask,
-        onError: (error) => {
-            toast.error(error.message)
-        },
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({queryKey: ['project', projectId]})
-            toast.success(data)
-        }
-    })
+  const [project, setProject] = useState<Project | null>(null)
+  const { data: user} = useAuth()
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: task._id,
+  })
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const params = useParams()
+  const projectId = params.projectId!
+  const { mutate } = useMutation({
+    mutationFn: deleteTask,
+    onError: (error) => {
+      toast.error(error.message)
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["project", projectId] })
+      toast.success(data)
+    },
+  })
+
+  useEffect(() => {
+    async function fetchProject() {
+      try {
+        const projectData = await getProjectDetails(projectId)
+        if (projectData) {
+            setProject(projectData)
+          } else {
+            toast.error("Project data is undefined")
+          }
+      } catch (error) {
+        toast.error((error as Error).message)
+      }
+    }
+
+    fetchProject()
+  }, [projectId])
+
+  const style = transform
+    ? {
+        transform: `translate3D(${transform.x}px, ${transform.y}px, 0)`,
+      }
+    : undefined
 
   return (
-    <li className={`p-5 bg-gradient-to-b from-blue-50 via-purple-50 to-indigo-50 border 
-        ${task.status === 'onHold' ? 'border-amber-400' 
-            : task.status === 'inProgress' ? 'border-blue-400' 
-            : task.status === 'underReview' ? 'border-rose-500' 
-            : task.status === 'completed' ? 'border-emerald-400' 
-            : 'border-slate-300'
-        } 
-        border-slate-300 flex justify-between gap-3 shadow-sm rounded-md hover:shadow-2xl transition-all duration-300 hover:shadow-sky-900/70`}>
-        <div className="min-w-0 flex flex-col gap-y-4">
-            <button 
-                type='button' 
-                className="text-xl font-bold text-slate-600 text-left hover:underline hover:text-sky-600"
-                onClick={() => navigate(location.pathname + `?viewTask=${task._id}`)}
-            >
-                {task.name}
-            </button>
-            
-            <p className="text-slate-500">{task.description}</p>
-        </div>
-        <div className="flex shrink-0  gap-x-6">
-            <Menu as="div" className="relative flex-none">
-                <Menu.Button className="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900">
-                    <span className="sr-only">opciones</span>
-                    <EllipsisVerticalIcon className="h-9 w-9" aria-hidden="true" />
-                </Menu.Button>
-                <Transition as={Fragment} enter="transition ease-out duration-100" enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100" leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100" leaveTo="transform opacity-0 scale-95">
-                    <Menu.Items
-                        className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-                        <Menu.Item>
-                            <button 
-                                type='button' className='block px-3 py-1 text-sm leading-6 text-gray-900'
-                                onClick={() => navigate(location.pathname + `?viewTask=${task._id}`)}
-                            >
-                                View Task
-                            </button>
-                        </Menu.Item>
-                        <Menu.Item>
-                            <button 
-                                type='button' 
-                                className={`block px-3 py-1 text-sm leading-6 text-gray-900 ${!canEdit ? 'pointer-events-none opacity-50' : ''}`}
-                                onClick={(e) => {
-                                    if(canEdit) {
-                                        navigate(location.pathname + `?editTask=${task._id}`)}
-                                    else {
-                                        e.preventDefault()
-                                        toast.error("Only the manager can edit tasks")
-                                    }
-                            }}
-                            >
-                                Edit Task
-                            </button>
-                        </Menu.Item>
+    <div
+      className="bg-white rounded-lg shadow-slate-500 shadow-md hover:shadow-sky-800 hover:shadow-2xl transition-shadow"
+      {...listeners}
+      {...attributes}
+      ref={setNodeRef}
+      style={style}
+    >
+      <div className="w-full flex items-center justify-between p-6 space-x-6">
+      <div className="flex-1 truncate">
+          <Link
+            to={location.pathname + `?viewTask=${task._id}`}
+            onPointerDown={(e) => e.stopPropagation()}
+            onPointerUp={(e) => {
+                if (e.button === 0) {
+                    navigate(`?viewTask=${task._id}`);
+                  }
+            }}
+            className="text-gray-900 text-3xl font-bold hover:underline cursor-pointer"
+          >
+            {task.name}
+          </Link>
 
-                        <Menu.Item>
-                            <button 
-                                type='button' 
-                                className={`block px-3 py-1 text-sm leading-6 text-red-500 ${!canEdit ? 'pointer-events-none opacity-50' : ''}`}
-                                onClick={(e) => {
-                                    if(canEdit) {
-                                        mutate({projectId, taskId: task._id})
-                                    } else {
-                                        e.preventDefault()
-                                        toast.error("Only the manager can delete tasks")
-                                    }
-                                }}
-                            >
-                                Delete Task
-                            </button>
-                        </Menu.Item>
-                    </Menu.Items>
-                </Transition>
-            </Menu>
+
+
+          <p className="mt-1 text-gray-500 text-sm truncate">{task.description}</p>
         </div>
-    </li>
+      </div>
+      <div className ={`flex divide-x divide-gray-200  ${project?.manager !== user?._id ? 'pointer-events-none opacity-50' : ''}` }>
+        <div className="w-0 flex-1 flex bg-orange-300 hover:bg-orange-100">
+        <Link
+            to={location.pathname + `?editTask=${task._id}`}
+            className={`relative w-0 flex-1 inline-flex items-center justify-center py-2 text-sm text-gray-700 font-medium border border-transparent rounded-bl-lg hover:text-gray-500 ${
+              !canEdit ? "pointer-events-none opacity-50" : ""
+            }`}
+            onPointerDown={(e) => e.stopPropagation()} 
+            onClick={(e) => {
+              if (!canEdit) {
+                e.preventDefault();
+                toast.error("Only the manager can edit tasks");
+              }
+            }}
+          >
+            Edit Task
+          </Link>
+        </div>
+        <div className="w-0 flex-1 flex bg-rose-300 hover:bg-rose-100">
+          <button
+            type="button"
+            className={`relative w-0 flex-1 inline-flex items-center justify-center py-2 text-sm text-red-500 font-medium border border-transparent rounded-br-lg hover:text-red-700 ${
+              !canEdit ? "pointer-events-none opacity-50" : ""
+            }`}
+            onPointerDown={(e) => e.stopPropagation()} 
+            onClick={(e) => {
+              if (canEdit) {
+                mutate({ projectId, taskId: task._id })
+              } else {
+                e.preventDefault()
+                toast.error("Only the manager can delete tasks")
+              }
+            }}
+          >
+            Delete Task
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }

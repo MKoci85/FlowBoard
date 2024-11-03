@@ -1,14 +1,15 @@
-import { Link } from 'react-router-dom'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { deleteProjectById, getAllProjects } from '@/api/ProjectAPI'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { getAllProjects } from '@/api/ProjectAPI'
 import { toast } from 'react-toastify'
 import { useAuth } from '@/hooks/useAuth'
 import { isManager } from '@/utils/policies'
+import DeleteProjectModal from './projects/DeleteProjectModal'
 
 export default function DashboardView() {
 
-    const queryClient = useQueryClient()
-
+    const location = useLocation()
+    const navigate = useNavigate()
     const { data: user, isLoading: authLoading} = useAuth()
 
     const { data, isLoading } = useQuery({
@@ -16,16 +17,6 @@ export default function DashboardView() {
         queryFn: getAllProjects
     })
 
-    const { mutate} = useMutation({
-        mutationFn: deleteProjectById,
-        onError: (error) => {
-            toast.error(error.message)
-        }, 
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ['projects']})
-            toast.success(data)
-        }
-    })
 
     if(isLoading && authLoading) return <p>Loading...</p>
   
@@ -77,7 +68,7 @@ export default function DashboardView() {
                                     View Project
                                 </Link>
                             </div>
-                            <div className="-ml-px w-0 flex-1 flex bg-orange-300 hover:bg-orange-100">
+                            <div className={`w-0 flex-1 flex bg-orange-300 hover:bg-orange-100 ${project.manager !== user._id ? 'pointer-events-none opacity-50' : ''}`}>
                                 <Link to={`/projects/${project._id}/edit`}
                                     className={`relative w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 font-medium border border-transparent rounded-br-lg hover:text-gray-500 ${
                                         !isManager(project.manager, user._id) ? 'pointer-events-none opacity-50' : ''
@@ -92,19 +83,21 @@ export default function DashboardView() {
                                     Edit Project
                                 </Link>
                             </div>
-                            <div className="-ml-px w-0 flex-1 flex bg-rose-300 hover:bg-rose-100">
+                            <div className={`w-0 flex-1 flex bg-rose-300 hover:bg-rose-100 ${project.manager !== user._id ? 'pointer-events-none opacity-50' : ''}`}>
                                 <button 
                                     type='button' 
                                     className={`relative w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-red-500 font-medium border border-transparent rounded-br-lg hover:text-red-700 ${
-                                        project.manager !== user._id ? 'pointer-events-none opacity-50' : ''
+                                        project.manager !== user._id ? 'opacity-50' : ''
                                     }`}
                                     onClick={(e) => {
-                                        if (!isManager(project.manager, user._id)) {
-                                            e.preventDefault();
-                                            toast.error("Only the manager can delete this project.");
-                                        } else {
-                                            mutate(project._id)} }
+                                            if (!isManager(project.manager, user._id)) {
+                                                e.preventDefault();
+                                                toast.error("Only the manager can delete this project.");
+                                            } else {
+                                                navigate(location.pathname + `?deleteProject=${project._id}`)
+                                            } 
                                         }
+                                    }
                                 >
                                     Delete Project
                                 </button>
@@ -127,6 +120,8 @@ export default function DashboardView() {
             </Link>
           </p>
         )}
+
+        <DeleteProjectModal />
     </>
   )
 }

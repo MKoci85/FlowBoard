@@ -1,7 +1,7 @@
 import { NoteFormData } from '@/types/index'
 import { useForm } from 'react-hook-form'
 import ErrorMessage from '../ErrorMessage'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createNote } from '@/api/NoteAPI'
 import { toast } from 'react-toastify'
 import { useLocation, useParams } from 'react-router-dom'
@@ -21,6 +21,7 @@ export default function AddNoteForm() {
 
     const { register, handleSubmit, formState: {errors}, reset } = useForm({defaultValues: initialValues})
 
+    const queryClient = useQueryClient()
     const { mutate } = useMutation({
         mutationFn: createNote,
         onError: (error) => {
@@ -28,12 +29,13 @@ export default function AddNoteForm() {
         },
         onSuccess: (data) => {
             toast.success(data)
-            reset()
+            queryClient.invalidateQueries({queryKey: ['task', taskId]})
         }
     })
 
     const handleAddNote = (formData: NoteFormData) => {
         mutate({projectId, taskId, formData})
+        reset()
     }
   return (
     <form
@@ -42,13 +44,13 @@ export default function AddNoteForm() {
         noValidate
     >
         <div className="flex flex-col gap-2">
-            <label className="font-bold" htmlFor="content">Create note</label>
+            <label className="mt-3 text-sm font-medium text-gray-700" htmlFor="content">Create note</label>
             <input 
                 id="content"
                 type="text"
                 autoComplete="off"
                 placeholder="Note content"
-                className="w-full border border-gray-300"
+                className="w-full border border-gray-300 rounded-md text-sm p-2"
                 {...register('content', {
                     required: 'Content note is required'
                 })}
@@ -60,7 +62,7 @@ export default function AddNoteForm() {
         <input 
             type="submit"
             value="Create Note"
-            className="bg-indigo-400 hover:bg-indigo-500 w-full text-white font-black cursor-pointer rounded-lg"
+            className="bg-indigo-400 hover:bg-indigo-500 w-full text-white font-black cursor-pointer rounded-md shadow-sm shadow-gray-600 py-1"
         />
     </form>
   )

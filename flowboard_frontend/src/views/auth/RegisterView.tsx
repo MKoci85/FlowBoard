@@ -17,7 +17,7 @@ export default function RegisterView() {
     name: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    confirm_password: '',
   }
 
   const { register, handleSubmit, watch, formState: { errors }, reset } = useForm<UserRegistrationForm>({ defaultValues: initialValues });
@@ -144,9 +144,9 @@ export default function RegisterView() {
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 className={`appearance-none border rounded-lg w-full py-3 px-4 pl-11 text-gray-700 leading-tight focus:outline-none focus:shadow-outline transition-all duration-300 ${
-                  errors.confirmPassword ? 'border-red-500 shake' : 'border-gray-300 hover:border-gray-400'
+                  errors.confirm_password ? 'border-red-500 shake' : 'border-gray-300 hover:border-gray-400'
                 }`}
-                {...register("confirmPassword", {
+                {...register("confirm_password", {
                   required: "Confirm Password is required",
                   validate: value => value === password || 'Passwords do not match'
                 })}
@@ -164,8 +164,8 @@ export default function RegisterView() {
                 )}
               </button>
             </div>
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-xs italic mt-1 slide-down">{errors.confirmPassword.message}</p>
+            {errors.confirm_password && (
+              <p className="text-red-500 text-xs italic mt-1 slide-down">{errors.confirm_password.message}</p>
             )}
           </div>
           <div className="mb-6">
