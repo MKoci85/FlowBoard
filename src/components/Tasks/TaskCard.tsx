@@ -62,7 +62,7 @@ export default function TaskCard({ task, canEdit }: TaskCardProps) {
 
   return (
     <div
-      className="bg-white rounded-lg shadow-slate-500 shadow-md hover:shadow-sky-800 hover:shadow-2xl transition-shadow"
+      className="bg-white rounded-lg shadow-slate-500 shadow-md hover:shadow-sky-800 hover:shadow-2xl transition-shadow cursor-grab"
       {...listeners}
       {...attributes}
       ref={setNodeRef}
@@ -78,7 +78,7 @@ export default function TaskCard({ task, canEdit }: TaskCardProps) {
                     navigate(`?viewTask=${task._id}`);
                   }
             }}
-            className="text-gray-900 text-3xl font-bold hover:underline cursor-pointer"
+            className="text-gray-900 text-2xl font-bold hover:underline cursor-pointer"
           >
             {task.name}
           </Link>
@@ -89,10 +89,10 @@ export default function TaskCard({ task, canEdit }: TaskCardProps) {
         </div>
       </div>
       <div className ={`flex divide-x divide-gray-200  ${project?.manager !== user?._id ? 'pointer-events-none opacity-50' : ''}` }>
-        <div className="w-0 flex-1 flex bg-orange-300 hover:bg-orange-100">
+        <div className="w-0 flex-1 flex bg-orange-300 hover:bg-orange-100 border-r-2 border-slate-500 hover:shadow-xl opacity-80 transition-all duration-300 ease-in-out">
         <Link
             to={location.pathname + `?editTask=${task._id}`}
-            className={`relative w-0 flex-1 inline-flex items-center justify-center py-2 text-sm text-gray-700 font-medium border border-transparent rounded-bl-lg hover:text-gray-500 ${
+            className={`relative w-0 flex-1 inline-flex items-center justify-center py-1 text-sm text-gray-700 font-medium border border-transparent hover:text-gray-500 ${
               !canEdit ? "pointer-events-none opacity-50" : ""
             }`}
             onPointerDown={(e) => e.stopPropagation()} 
@@ -106,10 +106,10 @@ export default function TaskCard({ task, canEdit }: TaskCardProps) {
             Edit Task
           </Link>
         </div>
-        <div className="w-0 flex-1 flex bg-rose-300 hover:bg-rose-100">
+        <div className="w-0 flex-1 flex bg-rose-300 hover:bg-red-200 opacity-80 transition-all duration-300 ease-in-out">
           <button
             type="button"
-            className={`relative w-0 flex-1 inline-flex items-center justify-center py-2 text-sm text-red-500 font-medium border border-transparent rounded-br-lg hover:text-red-700 ${
+            className={`relative w-0 flex-1 inline-flex items-center justify-center py-1 text-sm text-red-500 font-medium border border-transparent hover:text-red-700 ${
               !canEdit ? "pointer-events-none opacity-50" : ""
             }`}
             onPointerDown={(e) => e.stopPropagation()} 

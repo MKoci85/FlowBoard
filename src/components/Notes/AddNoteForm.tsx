@@ -62,7 +62,7 @@ export default function AddNoteForm() {
         <input 
             type="submit"
             value="Create Note"
-            className="bg-indigo-400 hover:bg-indigo-500 w-full text-white font-black cursor-pointer rounded-md shadow-sm shadow-gray-600 py-1"
+            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-1 px-4 rounded-lg focus:outline-none focus:shadow-outline transform transition-all duration-300 ease-in-out cursor-pointer"
         />
     </form>
   )

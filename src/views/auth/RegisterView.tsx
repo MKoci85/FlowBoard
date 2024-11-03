@@ -45,7 +45,7 @@ export default function RegisterView() {
       <div className="w-full max-w-md">
         <form
           onSubmit={handleSubmit(handleRegister)}
-          className="bg-white shadow-2xl rounded-lg px-8 pt-6 pb-8 mb-4 transform transition-all duration-500 ease-in-out hover:scale-95"
+          className="bg-white shadow-2xl rounded-lg px-8 pt-6 pb-8 mb-4 transform transition-all duration-500 ease-in-out"
           noValidate
         >
           <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Create Account</h2>
@@ -171,7 +171,7 @@ export default function RegisterView() {
           <div className="mb-6">
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transform transition-all duration-300 ease-in-out hover:scale-105"
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transform transition-all duration-300 ease-in-out"
             >
               Register
             </button>
