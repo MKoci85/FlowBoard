@@ -92,8 +92,8 @@ Las contribuciones son bienvenidas y apreciadas. Si deseas contribuir, por favor
 
 Si tienes preguntas, sugerencias o comentarios, no dudes en ponerte en contacto a través de:
 
-- **Correo electrónico**: [correo@ejemplo.com](mailto:correo@ejemplo.com)
-- **LinkedIn**: [tu-perfil-linkedin](https://www.linkedin.com/in/tu-perfil-linkedin)
+- **Correo electrónico**: [mariano.koci@gmail.com](mailto:mariano.koci@gmail.com)
+- **LinkedIn**: [Mariano Koci](https://www.linkedin.com/in/mkoci/)
 
 ## 💡 Agradecimientos
 
