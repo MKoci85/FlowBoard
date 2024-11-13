@@ -48,15 +48,31 @@ A continuación se detallan las principales tecnologías utilizadas en la constr
 
 ## 📸 Capturas de pantalla
 
+_Pantalla de inicio de sesión_
 <p align="center">
   <img src="./public/screenshots/login.png" alt="Pantalla de inicio" width="600px">
 </p>
-_Pantalla de inicio de sesión_
 
+_Pantalla de inicio de la aplicación_
 <p align="center">
   <img src="./public/screenshots/projects.png" alt="Pantalla de inicio" width="600px">
 </p>
-_Pantalla de inicio de la aplicación_
+
+_Pantalla de listado de tareas_
+<p align="center">
+  <img src="./public/screenshots/tasks.png" alt="Pantalla de inicio" width="600px">
+</p>
+
+_Vista de la tarea_
+<p align="center">
+  <img src="./public/screenshots/task.png" alt="Pantalla de inicio" width="600px">
+</p>
+
+_Vista para buscar y agregar un miembro al proyecto_
+<p align="center">
+  <img src="./public/screenshots/add_member.png" alt="Pantalla de inicio" width="600px">
+</p>
+
 
 ## 📄 Licencia
 
